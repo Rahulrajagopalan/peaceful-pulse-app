@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "142814119034",
+    "project_id": "peaceful-pulse-35af5",
+    "storage_bucket": "peaceful-pulse-35af5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:142814119034:android:7ddcc8151cdab0c34ae7c3",
+        "android_client_info": {
+          "package_name": "com.example.peaceful_pulse"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVt8Zn1XIMA8pTtBl9v6TyewWq5kqdUqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
