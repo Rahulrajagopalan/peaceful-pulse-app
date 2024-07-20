@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:peaceful_pulse/constants/custom_colors.dart';
+import 'package:peaceful_pulse/controller/validation.dart';
 import 'package:peaceful_pulse/user/user_home.dart';
 import 'package:peaceful_pulse/user/user_login_form.dart';
 import 'package:random_string/random_string.dart';
@@ -83,6 +86,11 @@ class _UserRegisterFormState extends State<UserRegisterForm> {
                           height: 30,
                         ),
                         TextFormField(
+                          validator: (value) {
+                            if (value == null || value.isEmpty){
+                              return "Enter a Name";
+                            }
+                          },
                           controller: _nameController,
                           decoration: InputDecoration(
                               hintStyle: const TextStyle(
@@ -99,6 +107,12 @@ class _UserRegisterFormState extends State<UserRegisterForm> {
                           height: 20,
                         ),
                         TextFormField(
+                          validator: (value) {
+                            bool val = Controller().isValidEmail(value!);
+                            if (val == false || value.isEmpty) {
+                              return "Enter a valid email";
+                            }
+                          },
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
@@ -116,6 +130,11 @@ class _UserRegisterFormState extends State<UserRegisterForm> {
                           height: 20,
                         ),
                         TextFormField(
+                          validator: (value) {
+                            if(value!.length !=10){
+                              return "Enter a valid phone number";
+                            }
+                          },
                           controller: _phoneController,
                           keyboardType: TextInputType.phone,
                           decoration: InputDecoration(
@@ -133,6 +152,12 @@ class _UserRegisterFormState extends State<UserRegisterForm> {
                           height: 20,
                         ),
                         TextFormField(
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return "Required";
+                            }
+                            return Controller().isValidPass(value);
+                          },
                           controller: _passwordController,
                           obscureText: _isObscured,
                           enabled: true,
@@ -189,6 +214,7 @@ class _UserRegisterFormState extends State<UserRegisterForm> {
                                   onPressed: () {
                                     //   Register Logic
                                     if (_formKey.currentState!.validate()) {
+                                      log(_emailController.text);
                                       FirebaseAuth.instance
                                           .createUserWithEmailAndPassword(
                                               email: _emailController.text,

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:peaceful_pulse/deleted/open_cv.dart';
 import 'package:peaceful_pulse/firebase_options.dart';
 import 'package:peaceful_pulse/user/splash_screen.dart';
 
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Peaceful Pulse',
-      home: SplashScreen(),
+      home: OpenCv(),
     );
   }
 }
