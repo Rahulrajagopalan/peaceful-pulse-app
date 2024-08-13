@@ -56,7 +56,7 @@ class _UserHomeState extends State<UserHome> {
         onTap: _onItemTapped,
         currentIndex: _selectedItem,
         selectedItemColor: CustomColors.primaryColor,
-        unselectedItemColor: CustomColors.secondaryColor,
+        unselectedItemColor: const Color.fromARGB(255, 45, 38, 25),
         showSelectedLabels: false,
       ),
     );

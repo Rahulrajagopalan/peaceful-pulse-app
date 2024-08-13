@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:peaceful_pulse/constants/custom_colors.dart';
 import 'package:peaceful_pulse/user/user_edit_profile.dart';
 import 'package:peaceful_pulse/user/user_help.dart';
+import 'package:peaceful_pulse/user/user_login_form.dart';
 import 'package:peaceful_pulse/user/user_notification.dart';
 import 'package:peaceful_pulse/user/user_settings.dart';
 
@@ -80,7 +81,7 @@ class _UserProfileState extends State<UserProfile> {
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 15.0),
                   child: Text(
-                    userDoc!["Name"],
+                    userDoc!["fullName"],
                     style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -236,9 +237,13 @@ class _UserProfileState extends State<UserProfile> {
                       ),
                       InkWell(
                           onTap: () {
-                            FirebaseAuth.instance
-                                .signOut()
-                                .then((value) => {Navigator.of(context).pop()});
+                            FirebaseAuth.instance.signOut().then((value) => {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              UserLoginForm()))
+                                });
                           },
                           child: Row(
                             children: [

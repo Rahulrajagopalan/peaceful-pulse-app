@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:peaceful_pulse/models/user_model.dart';
 
 class DataBaseMethods {
-  Future addUserDetails(Map<String, dynamic> userInfoMap, String id) async {
-    return await FirebaseFirestore.instance
-        .collection("Users")
+  final storeUser = FirebaseFirestore.instance.collection("Users");
+  final storeDoctor = FirebaseFirestore.instance.collection("Doctors");
+  
+  Future addUserDetails(UserModel userInfoMap, String id) async {
+    return await storeUser
         .doc(id)
-        .set(userInfoMap);
+        .set(userInfoMap.toMap());
   }
 
   Future<Stream<QuerySnapshot>>getUserDetails()async{

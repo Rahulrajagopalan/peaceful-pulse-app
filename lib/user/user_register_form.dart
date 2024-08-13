@@ -7,6 +7,8 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:peaceful_pulse/constants/custom_colors.dart';
 import 'package:peaceful_pulse/controller/validation.dart';
+import 'package:peaceful_pulse/models/user_model.dart';
+import 'package:peaceful_pulse/services/otp_authentication.dart';
 import 'package:peaceful_pulse/user/user_home.dart';
 import 'package:peaceful_pulse/user/user_login_form.dart';
 import 'package:random_string/random_string.dart';
@@ -29,6 +31,7 @@ class _UserRegisterFormState extends State<UserRegisterForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final auth = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +90,7 @@ class _UserRegisterFormState extends State<UserRegisterForm> {
                         ),
                         TextFormField(
                           validator: (value) {
-                            if (value == null || value.isEmpty){
+                            if (value == null || value.isEmpty) {
                               return "Enter a Name";
                             }
                           },
@@ -131,7 +134,7 @@ class _UserRegisterFormState extends State<UserRegisterForm> {
                         ),
                         TextFormField(
                           validator: (value) {
-                            if(value!.length !=10){
+                            if (value!.length != 10) {
                               return "Enter a valid phone number";
                             }
                           },
@@ -190,6 +193,9 @@ class _UserRegisterFormState extends State<UserRegisterForm> {
                                 onChanged: (bool? value) {
                                   setState(() {
                                     _isChecked = value!;
+                                    Controller().googleSignIn.isSignedIn().then((value){
+                                      log("$value");
+                                    });
                                   });
                                 }),
                             const Text("Already Have an account?"),
@@ -214,27 +220,30 @@ class _UserRegisterFormState extends State<UserRegisterForm> {
                                   onPressed: () {
                                     //   Register Logic
                                     if (_formKey.currentState!.validate()) {
-                                      log(_emailController.text);
-                                      FirebaseAuth.instance
-                                          .createUserWithEmailAndPassword(
-                                              email: _emailController.text,
+                                      try {
+                                        auth
+                                            .createUserWithEmailAndPassword(
+                                                email: _emailController.text,
+                                                password:
+                                                    _passwordController.text)
+                                            .then((credential) async {
+                                          String id = credential.user!.uid;
+                                          UserModel userInfoMap = UserModel(
+                                              fullName: _nameController.text,
+                                              eMail: _emailController.text,
                                               password:
-                                                  _passwordController.text)
-                                          .then((credential) async {
-                                        String id = credential.user!.uid;
-                                        Map<String, dynamic> userInfoMap = {
-                                          "Name": _nameController.text,
-                                          "Email": _emailController.text,
-                                          "Phone Number": _phoneController.text,
-                                          "id": id
-                                        };
-                                        await DataBaseMethods()
-                                            .addUserDetails(userInfoMap, id);
-                                      }).then((value) => Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      const UserHome())));
+                                                  _passwordController.text,
+                                              id: id);
+                                          await DataBaseMethods()
+                                              .addUserDetails(userInfoMap, id);
+                                        }).then((value) => Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const UserHome())));
+                                      } catch (e) {
+                                        log("exeption $e");
+                                      }
                                     }
                                   },
                                   style: TextButton.styleFrom(
@@ -266,10 +275,19 @@ class _UserRegisterFormState extends State<UserRegisterForm> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             IconButton(
-                                onPressed: () {},
+                                onPressed: () async {
+                                  await Controller().signInWithGoogle(context);
+                                  // Navigator.pushReplacement(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //         builder: (context) => UserHome()));
+                                  log("Google SignIn");
+                                },
                                 icon: const Icon(FontAwesomeIcons.google)),
                             IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(context, MaterialPageRoute(builder: (context)=> PhoneOTPVerification()));
+                                },
                                 icon: const Icon(FontAwesomeIcons.facebook)),
                             IconButton(
                                 onPressed: () {},

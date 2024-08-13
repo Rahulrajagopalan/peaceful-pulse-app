@@ -25,7 +25,7 @@ class _UserLoginFormState extends State<UserLoginForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: CustomColors.primaryColor,
+        backgroundColor: CustomColors.primaryColor,
         body: Stack(
           children: [
             const Column(
@@ -122,11 +122,14 @@ class _UserLoginFormState extends State<UserLoginForm> {
                             children: [
                               TextButton(
                                   onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const UserForgotPassword()));
+                                    if (_emailController.text.isNotEmpty) {
+                                      FirebaseAuth.instance
+                                          .sendPasswordResetEmail(
+                                              email: _emailController.text)
+                                          .then((value) => ScaffoldMessenger(
+                                              child: Text(
+                                                  "Password reset mail has been sent")));
+                                    }
                                   },
                                   child: const Text(
                                     "Forgot Password",
@@ -167,7 +170,8 @@ class _UserLoginFormState extends State<UserLoginForm> {
                                         backgroundColor:
                                             CustomColors.primaryColor),
                                     child: const Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 10),
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 10),
                                       child: Text(
                                         "Login",
                                         style: TextStyle(
